@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MamboHachimi</title>
+    <link rel="stylesheet" href="style.css">
+    <style> 
+        h1 {
+
+            text-align: center;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <nav> 
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    
+    <h1 id="title"></h1>
+    <img id="randomGif" alt="umamusumes">
+    <button onclick="location.reload()">Get New Uma!</button>
+    <script>
+        const messages = ["Ei Ei Mun!!!!", "Hachimi Hachimi Hachimi", "Torena-San"]
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        document.getElementById("title").textContent = randomMessage
+
+        const gifs = [
+            "https://paradoxal.s-ul.eu/v4g1cbqT",
+            "https://paradoxal.s-ul.eu/v4g1cbqT",
+            "https://paradoxal.s-ul.eu/v4g1cbqT",
+            "https://paradoxal.s-ul.eu/v4g1cbqT",
+            "https://paradoxal.s-ul.eu/v4g1cbqT",
+            "https://paradoxal.s-ul.eu/ppaltRQc",
+            "https://paradoxal.s-ul.eu/ppaltRQc",
+            "https://paradoxal.s-ul.eu/ppaltRQc",
+            "https://paradoxal.s-ul.eu/ppaltRQc",
+            "https://paradoxal.s-ul.eu/ppaltRQc",
+            "https://paradoxal.s-ul.eu/y7ZpITMT",
+            "https://paradoxal.s-ul.eu/iBGEoEpR"
+            
+        ];
+        const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+        document.getElementById("randomGif").src = randomGif;
+    </script>
+    <footer>
+        <div class="socials">
+            <a href="https://x.com/MamboHachimi" target="_blank">Twitter</a>
+            <a href="https://discord.com/invite/umamusume-eng" target="_blank">Discord</a>
+            <a href="https://instagram.com/" target="_blank">Instagram</a>
+            <a href="https://github.com/Paradoxalll" target="_blank">GitHub</a>
+        </div>
+        <p class="copyright">© 2025 MamboHachimi. No rights reserved.</p>
+    </footer>
+</body>
+</html>
