@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MamboHachimi</title>
+    <link rel="icon" type="image/png" href="./mambohachimilogo.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-container h1 {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .auth-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid white;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            background: rgba(255, 100, 100, 0.3);
+            color: #ffcccc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success-msg {
+            background: rgba(100, 255, 100, 0.3);
+            color: #ccffcc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- User Menu -->
+    <div class="user-menu">
+        <button class="user-menu-btn" id="userMenuBtn">
+            <span id="userMenuText">Account</span>
+            <span>▼</span>
+        </button>
+        <div class="user-menu-dropdown" id="userMenuDropdown">
+            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
+            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
+            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
+            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
+            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="forum.html">Chatroom</a>
+        <a href="login.html">Login</a>
+    </nav>
+
+    <div class="auth-container">
+        <h1>Login / Sign Up</h1>
+        
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="emailInput" placeholder="your@email.com">
+        </div>
+        
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="passwordInput" placeholder="Password (min 6 characters)">
+        </div>
+
+        <div class="form-group">
+            <label>Display Name</label>
+            <input type="text" id="displayNameInput" placeholder="Your chat username" maxlength="20">
+        </div>
+        
+        <div class="auth-buttons">
+            <button class="auth-btn" id="loginBtn">Login</button>
+            <button class="auth-btn" id="signupBtn">Sign Up</button>
+        </div>
+
+        <button class="auth-btn" id="logoutBtn" style="display: none; margin-top: 10px; width: 100%;">Logout</button>
+        
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="success-msg" id="successMsg"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMsg');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('signupBtn').addEventListener('click', () => {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const displayName = document.getElementById('displayNameInput').value;
+
+            if (!email || !password || !displayName) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    database.ref('users/' + userCredential.user.uid).set({
+                        displayName: displayName,
+                        email: email
+                    });
+                    showSuccess('Account created! You can now use the chatroom.');
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    showError(error.message);
+                });
+        });
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            if (!email || !password) {
+                showError('Please enter email and password');
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    showSuccess('Logged in successfully!');
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 1000);
+                })
+                .catch((error) => {
+                    showError(error.message);
+                });
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                showSuccess('Logged out successfully!');
+                updateUI(null);
+            });
+        });
+
+        auth.onAuthStateChanged((user) => {
+            updateUI(user);
+        });
+
+        function updateUI(user) {
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const emailInput = document.getElementById('emailInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const displayNameInput = document.getElementById('displayNameInput');
+
+            if (user) {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('returnToAdmin') === 'true') {
+                    loginBtn.style.display = 'none';
+                    signupBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    emailInput.disabled = true;
+                    passwordInput.disabled = true;
+                    displayNameInput.disabled = true;
+                    emailInput.value = user.email;
+                    showSuccess('You are logged in as ' + user.email + '. Logout to login as admin.');
+                } else {
+                    window.location.href = 'forum.html';
+                }
+            } else {
+                loginBtn.style.display = 'block';
+                signupBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                emailInput.disabled = false;
+                passwordInput.disabled = false;
+                displayNameInput.disabled = false;
+            }
+        }
+    </script>
+
+    <!-- User Menu Script -->
+    <script>
+        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userMenuDropdown').classList.toggle('show');
+        });
+
+        document.addEventListener('click', function() {
+            document.getElementById('userMenuDropdown').classList.remove('show');
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userEmailDisplay').style.display = 'block';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutDivider').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                document.getElementById('userMenuText').textContent = 'Account';
+                document.getElementById('userEmailDisplay').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('logoutDivider').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+            }
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                alert('Logged out successfully');
+                location.reload();
+            });
+        });
+    </script>
+
+    <footer>
+        <div class="socials">
+            <a href="https://twitter.com/yourusername" target="_blank">Twitter</a>
+            <a href="https://discord.gg/yourinvite" target="_blank">Discord</a>
+            <a href="htt

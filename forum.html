@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./mambohachimilogo.png">
+    <link rel="stylesheet" href="style.css">
+    <title>Forum</title>
+</head>
+<body>
+    <!-- User Menu -->
+    <div class="user-menu">
+        <button class="user-menu-btn" id="userMenuBtn">
+            <span id="userMenuText">Account</span>
+            <span>▼</span>
+        </button>
+        <div class="user-menu-dropdown" id="userMenuDropdown">
+            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
+            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
+            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
+            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
+            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
+        </div>
+    </div>
+
+    <nav> 
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
+    </nav>
+
+    <div class="chat-container" id="loginRequired" style="display: none;">
+        <div class="login-required">
+            <h1>Login Required</h1>
+            <p>Please <a href="login.html">login or sign up</a> to use the forum.</p>
+        </div>
+    </div>
+
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <h1>Community Forum</h1>
+        
+        <div class="online-counter">
+            <span class="online-dot"></span>
+            <span id="onlineCount">0</span> users online
+        </div>
+        
+        <div class="user-info" id="userInfo"></div>
+        
+        <div class="chat-messages" id="chatMessages"></div>
+        
+        <div class="chat-input-container">
+            <input type="text" id="messageInput" placeholder="Type a message..." maxlength="200">
+            <button id="sendBtn">Send</button>
+        </div>
+        
+        <div class="warning" id="warningMsg">⚠️ Message contains blocked words and was not sent.</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        const messagesRef = database.ref('messages');
+        let currentUser = null;
+        let currentDisplayName = null;
+        let presenceRef;
+        let connectedRef;
+
+        // Admin emails list
+        const ADMIN_EMAILS = ['prddux0001@gmail.com', 'fumohachimi@gmail.com'];
+
+        const blacklist = [
+            "Amats"
+        ];
+
+        function containsBlacklistedTerm(text) {
+            const lowerText = text.toLowerCase();
+            return blacklist.some(term => lowerText.includes(term.toLowerCase()));
+        }
+
+        function addMessageToUI(username, message, timestamp, userEmail) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+
+            const time = new Date(timestamp).toLocaleTimeString();
+
+            // Determine username class based on email
+            const usernameClass = ADMIN_EMAILS.includes(userEmail) ? 'username-admin' : 'username-user';
+
+            messageDiv.innerHTML = `
+                <span class="${usernameClass}">${escapeHtml(username)}:</span>
+                <span class="message-text">${escapeHtml(message)}</span>
+                <span class="timestamp">${time}</span>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function sendMessage() {
+            if (!currentUser) return;
+            const messageInput = document.getElementById('messageInput');
+            const warningMsg = document.getElementById('warningMsg');
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            if (containsBlacklistedTerm(message)) {
+                warningMsg.classList.add('show');
+                setTimeout(() => {
+                    warningMsg.classList.remove('show');
+                }, 3000);
+                return;
+            }
+            
+            messagesRef.push({
+                username: currentDisplayName,
+                message: message,
+                timestamp: Date.now(),
+                userId: currentUser.uid,
+                userEmail: currentUser.email
+            });
+            
+            messageInput.value = '';
+            messageInput.focus();
+        }
+
+        // Online presence tracking
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                
+                // Set up presence
+                presenceRef = database.ref('presence/' + user.uid);
+                connectedRef = database.ref('.info/connected');
+                
+                connectedRef.on('value', (snapshot) => {
+                    if (snapshot.val() === true) {
+                        presenceRef.set(true);
+                        presenceRef.onDisconnect().remove();
+                    }
+                });
+                
+                database.ref('users/' + user.uid).once('value').then((snapshot) => {
+                    const userData = snapshot.val();
+                    currentDisplayName = userData ? userData.displayName : user.email;
+                    document.getElementById('loginRequired').style.display = 'none';
+                    document.getElementById('chatContainer').style.display = 'block';
+                    document.getElementById('userInfo').textContent = `Logged in as: ${currentDisplayName}`;
+                    
+                    messagesRef.limitToLast(50).on('child_added', (snapshot) => {
+                        const data = snapshot.val();
+                        addMessageToUI(data.username, data.message, data.timestamp, data.userEmail);
+                    });
+                });
+                
+                // Count online users
+                database.ref('presence').on('value', (snapshot) => {
+                    const onlineUsers = snapshot.val();
+                    const count = onlineUsers ? Object.keys(onlineUsers).length : 0;
+                    document.getElementById('onlineCount').textContent = count;
+                });
+                
+            } else {
+                currentUser = null;
+                document.getElementById('loginRequired').style.display = 'block';
+                document.getElementById('chatContainer').style.display = 'none';
+                
+                // Clean up presence when logged out
+                if (presenceRef) {
+                    presenceRef.remove();
+                }
+            }
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+
+    <!-- User Menu Script -->
+    <script>
+        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userMenuDropdown').classList.toggle('show');
+        });
+
+        document.addEventListener('click', function() {
+            document.getElementById('userMenuDropdown').classList.remove('show');
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userEmailDisplay').style.display = 'block';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutDivider').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                document.getElementById('userMenuText').textContent = 'Account';
+                document.getElementById('userEmailDisplay').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('logoutDivider').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+            }
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                alert('Logged out successfully');
+                location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
     <style> 
         h1 {
-
             text-align: center;
         }
         img {
@@ -23,24 +22,43 @@
             font-size: 16px;
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
+    <!-- User Menu -->
+    <div class="user-menu">
+        <button class="user-menu-btn" id="userMenuBtn">
+            <span id="userMenuText">Account</span>
+            <span>▼</span>
+        </button>
+        <div class="user-menu-dropdown" id="userMenuDropdown">
+            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
+            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
+            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
+            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
+            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
+        </div>
+    </div>
+
+    <!-- audio player -->
+    <audio id="clickSound" preload="auto">
+        <source src="./mambo.wav" type="audio/mpeg">
+    </audio>
+
     <nav> 
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
     </nav>
     
     <h1 id="title"></h1>
     <img id="randomGif" alt="umamusumes">
-    <button onclick="location.reload()">Get New Uma!</button>
-    <script>
-        const messages = ["Ei Ei Mun!!!!", "Hachimi Hachimi Hachimi", "Torena-San"]
-        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-        document.getElementById("title").textContent = randomMessage
+    <button id="newUmaBtn" onclick="changeContent()">Get New Uma!</button>
 
+    <script>
+        const messages = ["Ei Ei Mun!!!!", "Hachimi Hachimi Hachimi", "Torena-San", "Mambo"];
+        
         const gifs = [
             "https://paradoxal.s-ul.eu/v4g1cbqT",
             "https://paradoxal.s-ul.eu/v4g1cbqT",
@@ -54,11 +72,72 @@
             "https://paradoxal.s-ul.eu/ppaltRQc",
             "https://paradoxal.s-ul.eu/y7ZpITMT",
             "https://paradoxal.s-ul.eu/iBGEoEpR"
-            
         ];
-        const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-        document.getElementById("randomGif").src = randomGif;
+
+        function changeContent() {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById("title").textContent = randomMessage;
+
+            const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+            document.getElementById("randomGif").src = randomGif;
+        }
+
+        changeContent();
     </script>
+
+    <!-- Firebase SDK for user menu -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <!-- User Menu Script -->
+    <script>
+        // Toggle dropdown
+        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userMenuDropdown').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            document.getElementById('userMenuDropdown').classList.remove('show');
+        });
+
+        // Check auth state and update menu
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userEmailDisplay').style.display = 'block';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutDivider').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                document.getElementById('userMenuText').textContent = 'Account';
+                document.getElementById('userEmailDisplay').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('logoutDivider').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutLink').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                alert('Logged out successfully');
+                location.reload();
+            });
+        });
+    </script>
+
+    <script>
+        document.querySelector('button[onclick="changeContent()"]').addEventListener('click', function() {
+        const sound = document.getElementById('clickSound');
+        sound.currentTime = 0;
+        sound.play();
+    });
+    </script>
+
     <footer>
         <div class="socials">
             <a href="https://x.com/MamboHachimi" target="_blank">Twitter</a>

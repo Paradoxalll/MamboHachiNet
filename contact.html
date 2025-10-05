@@ -4,20 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MamboHachimi - Contact</title>
+    <link rel="icon" type="image/png" href="./mambohachimilogo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- User Menu -->
+    <div class="user-menu">
+        <button class="user-menu-btn" id="userMenuBtn">
+            <span id="userMenuText">Account</span>
+            <span>▼</span>
+        </button>
+        <div class="user-menu-dropdown" id="userMenuDropdown">
+            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
+            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
+            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
+            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
+            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
+        </div>
+    </div>
+
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
-        <a href= "contact.html">Contact</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
     </nav>
+
     <h1>Contact Us!</h1>
     <p>Email ➡️ fumohachimi@gmail.com <br>
         or DM on osu! <br>
-
         <a href="https://osu.ppy.sh/users/19299669" target="_blank">ralsei fan (main dev)</a> <br>
         <a href="https://osu.ppy.sh/users/18331339" target="_blank">Ethica</a>
     </p>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userMenuDropdown').classList.toggle('show');
+        });
+
+        document.addEventListener('click', function() {
+            document.getElementById('userMenuDropdown').classList.remove('show');
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userEmailDisplay').style.display = 'block';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutDivider').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                document.getElementById('userMenuText').textContent = 'Account';
+                document.getElementById('userEmailDisplay').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('logoutDivider').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+            }
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                alert('Logged out successfully');
+                location.reload();
+            });
+        });
+    </script>
 </body>
 </html>
