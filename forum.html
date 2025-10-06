@@ -24,9 +24,8 @@
         </div>
     </div>
 
-    <!-- Mobile hamburger and logo -->
+    <!-- Mobile hamburger -->
     <span class="hamburger" onclick="toggleMenu()">☰</span>
-    <a href="index.html" class="logo"><img src="./mambohachimilogo.png" alt="logo"></a>
 
     <!-- Desktop & Mobile Nav -->
     <nav>
@@ -87,9 +86,20 @@
         // Admin emails list
         const ADMIN_EMAILS = ['prddux0001@gmail.com', 'fumohachimi@gmail.com'];
 
-        const blacklist = [
-            "Amats"
-        ];
+        let blacklist = [];
+
+        // Load censored words from file
+        fetch('censoredWords.txt')
+            .then(response => response.text())
+            .then(text => {
+                blacklist = text.split('\n').map(word => word.trim()).filter(word => word.length > 0);
+                console.log('Loaded blacklist:', blacklist);
+            })
+            .catch(error => {
+                console.error('Error loading censored words:', error);
+                // Fallback to default
+                blacklist = ["Amats"];
+            });
 
         function containsBlacklistedTerm(text) {
             const lowerText = text.toLowerCase();
