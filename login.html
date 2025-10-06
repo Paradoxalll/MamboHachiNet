@@ -6,6 +6,7 @@
     <title>Login - MamboHachimi</title>
     <link rel="icon" type="image/png" href="./mambohachimilogo.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./mobile-design/nav.css" />
     <style>
         .auth-container {
             max-width: 400px;
@@ -107,12 +108,25 @@
         </div>
     </div>
 
+    <!-- Mobile hamburger and logo -->
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <a href="index.html" class="logo"><img src="./mambohachimilogo.png" alt="logo"></a>
+
+    <!-- Desktop & Mobile Nav -->
     <nav>
         <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="forum.html">Chatroom</a>
-        <a href="login.html">Login</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
     </nav>
+
+    <!-- Mobile dropdown menu -->
+    <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
+    </div>
 
     <div class="auth-container">
         <h1>Login / Sign Up</h1>
@@ -147,6 +161,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="./mobile-design/nav.js"></script>
 
     <script>
         function showError(message) {
@@ -301,6 +316,12 @@
 
     <footer>
         <div class="socials">
-            <a href="https://twitter.com/yourusername" target="_blank">Twitter</a>
-            <a href="https://discord.gg/yourinvite" target="_blank">Discord</a>
-            <a href="htt
+            <a href="https://x.com/MamboHachimi" target="_blank">Twitter</a>
+            <a href="https://discord.com/invite/umamusume-eng" target="_blank">Discord</a>
+            <a href="https://instagram.com/" target="_blank">Instagram</a>
+            <a href="https://github.com/Paradoxalll" target="_blank">GitHub</a>
+        </div>
+        <p class="copyright">© 2025 MamboHachimi. No rights reserved.</p>
+    </footer>
+</body>
+</html>

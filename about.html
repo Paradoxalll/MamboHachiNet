@@ -6,6 +6,7 @@
     <title>About Us - MamboHachimi</title>
     <link rel="icon" type="image/png" href="./mambohachimilogo.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./mobile-design/nav.css" />
 </head>
 <body>
     <!-- User Menu -->
@@ -23,6 +24,11 @@
         </div>
     </div>
 
+    <!-- Mobile hamburger and logo -->
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <a href="index.html" class="logo"><img src="./mambohachimilogo.png" alt="logo"></a>
+
+    <!-- Desktop & Mobile Nav -->
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
@@ -30,12 +36,21 @@
         <a href="forum.html">Forum</a>
     </nav>
 
+    <!-- Mobile dropdown menu -->
+    <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
+    </div>
+
     <h1> About Us ☆*: .｡. o(≧▽≦)o .｡.:*☆ </h1>
     <p>We are dedicated Umamusume and osu! enthusiasts who came together to build this platform in under two hours through collaborative coding (claude) and rapid development (vibe coding). Starting in 2025, we will deliver daily premium content focused exclusively on Umamusume and osu!, designed to engage, inform, and entertain the community.</p>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="./mobile-design/nav.js"></script>
 
     <script>
         document.getElementById('userMenuBtn').addEventListener('click', function(e) {
@@ -71,5 +86,15 @@
             });
         });
     </script>
+
+    <footer>
+        <div class="socials">
+            <a href="https://x.com/MamboHachimi" target="_blank">Twitter</a>
+            <a href="https://discord.com/invite/umamusume-eng" target="_blank">Discord</a>
+            <a href="https://instagram.com/" target="_blank">Instagram</a>
+            <a href="https://github.com/Paradoxalll" target="_blank">GitHub</a>
+        </div>
+        <p class="copyright">© 2025 MamboHachimi. No rights reserved.</p>
+    </footer>
 </body>
 </html>

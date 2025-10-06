@@ -6,6 +6,7 @@
     <title>Admin Portal - MamboHachimi</title>
     <link rel="icon" type="image/png" href="./mambohachimilogo.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./mobile-design/nav.css" />
     <style>
         .admin-container {
             max-width: 1200px;
@@ -198,12 +199,25 @@
         </div>
     </div>
 
+    <!-- Mobile hamburger and logo -->
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <a href="index.html" class="logo"><img src="./mambohachimilogo.png" alt="logo"></a>
+
+    <!-- Desktop & Mobile Nav -->
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
         <a href="forum.html">Forum</a>
-        <a href="login.html">Login</a>
     </nav>
+
+    <!-- Mobile dropdown menu -->
+    <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="forum.html">Forum</a>
+    </div>
 
     <div class="admin-container" id="accessDenied" style="display: none;">
         <div class="access-denied">
@@ -266,6 +280,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="./mobile-design/nav.js"></script>
 
     <script>
         const ADMIN_EMAILS = [

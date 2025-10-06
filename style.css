@@ -86,7 +86,7 @@ button:active {
     transform: translateY(0);
 }
 nav {
-    position: fixed;
+    position: fixed ;
     top: 0;
     left: 0;
     right: 0;
@@ -433,6 +433,10 @@ footer {
     gap: 8px;
 }
 
+.logo{
+            width: 3rem;
+        }
+        
 .user-menu-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
