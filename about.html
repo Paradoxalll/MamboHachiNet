@@ -8,68 +8,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- User Menu -->
-    <div class="user-menu">
-        <button class="user-menu-btn" id="userMenuBtn">
-            <span id="userMenuText">Account</span>
-            <span>▼</span>
-        </button>
-        <div class="user-menu-dropdown" id="userMenuDropdown">
-            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
-            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
-            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
-            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
-            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
-        </div>
-    </div>
-
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="contact.html">Contact</a>
-        <a href="forum.html">Forum</a>
     </nav>
 
-    <h1> About Us ☆*: .｡. o(≧▽≦)o .｡.:*☆ </h1>
-    <p>We are dedicated Umamusume and osu! enthusiasts who came together to build this platform in under two hours through collaborative coding (claude) and rapid development (vibe coding). Starting in 2025, we will deliver daily premium content focused exclusively on Umamusume and osu!, designed to engage, inform, and entertain the community.</p>
+    <h1> About Us! ☆  </h1>
+    <p>We are dedicated Umamusume enthusiasts leveraging our experience to develop a comprehensive trading card platform that offers fans an unprecedented way to engage with Umamusume. Our platform features regular updates, community-driven card submissions, and a fully integrated trading system with in-platform currency. We are committed to delivering an exceptional experience for the Umamusume community. Stay tuned for further updates. <br> - Sovereignty</p>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-
-    <script>
-        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.getElementById('userMenuDropdown').classList.toggle('show');
-        });
-
-        document.addEventListener('click', function() {
-            document.getElementById('userMenuDropdown').classList.remove('show');
-        });
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                document.getElementById('userEmailDisplay').style.display = 'block';
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('logoutDivider').style.display = 'block';
-                document.getElementById('logoutLink').style.display = 'block';
-            } else {
-                document.getElementById('userMenuText').textContent = 'Account';
-                document.getElementById('userEmailDisplay').style.display = 'none';
-                document.getElementById('loginLink').style.display = 'block';
-                document.getElementById('logoutDivider').style.display = 'none';
-                document.getElementById('logoutLink').style.display = 'none';
-            }
-        });
-
-        document.getElementById('logoutLink').addEventListener('click', function() {
-            auth.signOut().then(() => {
-                alert('Logged out successfully');
-                location.reload();
-            });
-        });
-    </script>
+    <script src="cursor-background.js"></script>
 </body>
 </html>

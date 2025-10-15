@@ -6,74 +6,151 @@
     <title>MamboHachimi - Contact</title>
     <link rel="icon" type="image/png" href="./mambohachimilogo.png">
     <link rel="stylesheet" href="style.css">
+     <style>
+      .osu-profiles-container {
+        display: flex;
+        gap: 25px;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: wrap;
+        max-width: 700px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .osu-profile-card {
+        flex: 1;
+        min-width: 150px;
+        max-width: 200px;
+        text-align: center;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .osu-profile-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(78, 237, 196, 0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(78, 237, 196, 0.2);
+      }
+
+      .osu-profile-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid rgba(78, 237, 196, 0.5);
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+
+      .osu-profile-card:hover img {
+        transform: scale(1.1);
+      }
+
+      .osu-profile-name {
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .osu-profile-role {
+        color: rgba(78, 237, 196, 0.8);
+        font-size: 12px;
+      }
+
+      .copy-alert {
+        position: fixed;
+        bottom: 80%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        z-index: 999999;
+      }
+
+      .copy-alert.show {
+        opacity: 1;
+      }
+
+      .email-link {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    </style>
 </head>
 <body>
-    <!-- User Menu -->
-    <div class="user-menu">
-        <button class="user-menu-btn" id="userMenuBtn">
-            <span id="userMenuText">Account</span>
-            <span>▼</span>
-        </button>
-        <div class="user-menu-dropdown" id="userMenuDropdown">
-            <div class="user-email-display" id="userEmailDisplay" style="display: none;"></div>
-            <a href="login.html" class="user-menu-item" id="loginLink">🔑 Login</a>
-            <a href="admin-login.html" class="user-menu-item" id="adminLoginLink">🛡️ Admin Login</a>
-            <div class="user-menu-divider" id="logoutDivider" style="display: none;"></div>
-            <div class="user-menu-item" id="logoutLink" style="display: none;">🚪 Logout</div>
-        </div>
-    </div>
-
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="contact.html">Contact</a>
-        <a href="forum.html">Forum</a>
     </nav>
 
     <h1>Contact Us!</h1>
-    <p>Email ➡️ fumohachimi@gmail.com <br>
-        or DM on osu! <br>
-        <a href="https://osu.ppy.sh/users/19299669" target="_blank">ralsei fan (main dev)</a> <br>
-        <a href="https://osu.ppy.sh/users/18331339" target="_blank">Ethica</a>
+    <p>📫
+      <span class="email-link" onclick="copyEmail()"
+        >fumohachimi@gmail.com</span
+      >
+      <br />
     </p>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
+    <div class="osu-profiles-container">
+      <a href="https://osu.ppy.sh/users/18331339" target="_blank" class="osu-profile-card">
+        <img src="https://a.ppy.sh/18331339" alt="Ethica">
+        <span class="osu-profile-name">Ethica</span>
+      </a>
+      <a href="https://osu.ppy.sh/users/19299669" target="_blank" class="osu-profile-card">
+        <img src="https://a.ppy.sh/19299669" alt="ralsei fan">
+        <span class="osu-profile-name">ralsei fan<br><span class="osu-profile-role">Lead Dev</span></span>
+      </a>
+      <a href="https://osu.ppy.sh/users/21662192" target="_blank" class="osu-profile-card">
+        <img src="https://a.ppy.sh/21662192" alt="Amats">
+        <span class="osu-profile-name">Amats</span><span class="osu-profile-role">#1 Contributor</span></span>
+      </a>
+    </div>
+
+    <div id="copyAlert" class="copy-alert">Copied to Clipboard!</div>
 
     <script>
-        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.getElementById('userMenuDropdown').classList.toggle('show');
-        });
-
-        document.addEventListener('click', function() {
-            document.getElementById('userMenuDropdown').classList.remove('show');
-        });
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('userMenuText').textContent = user.email.split('@')[0];
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                document.getElementById('userEmailDisplay').style.display = 'block';
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('logoutDivider').style.display = 'block';
-                document.getElementById('logoutLink').style.display = 'block';
-            } else {
-                document.getElementById('userMenuText').textContent = 'Account';
-                document.getElementById('userEmailDisplay').style.display = 'none';
-                document.getElementById('loginLink').style.display = 'block';
-                document.getElementById('logoutDivider').style.display = 'none';
-                document.getElementById('logoutLink').style.display = 'none';
-            }
-        });
-
-        document.getElementById('logoutLink').addEventListener('click', function() {
-            auth.signOut().then(() => {
-                alert('Logged out successfully');
-                location.reload();
-            });
-        });
+      function copyEmail() {
+        const email = "fumohachimi@gmail.com";
+        navigator.clipboard
+          .writeText(email)
+          .then(() => {
+            const alertBox = document.getElementById("copyAlert");
+            alertBox.classList.add("show");
+            setTimeout(() => {
+              alertBox.classList.remove("show");
+            }, 1500);
+          })
+          .catch((err) => {
+            console.error("Failed to copy email: ", err);
+          });
+      }
     </script>
+    <script src="cursor-background.js"></script>
+
+    <footer>
+        <div class="socials">
+            <a href="https://x.com/MamboHachimi" target="_blank">Twitter</a>
+            <a href="https://discord.com/invite/umamusume-eng" target="_blank">Discord</a>
+            <a href="https://instagram.com/" target="_blank">Instagram</a>
+            <a href="https://github.com/Paradoxalll" target="_blank">GitHub</a>
+        </div>
+        <p class="copyright">© 2025 MamboHachimi. No rights reserved.</p>
+    </footer>
 </body>
 </html>

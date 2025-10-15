@@ -6,35 +6,32 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #0ac0e0 0%, #a312cf 100%);
+    background: #000000;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    position: relative;
 }
 
 h1 {
     text-align: center;
-    font-size: 3rem;
+    font-size: 2.0rem;
     margin-bottom: 30px;
-    background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe66d, #a8e6cf, #ff6b6b);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: rainbow-scroll 3s linear infinite;
-    text-shadow: none;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    transition: all 0.4s ease;
+    cursor: default;
 }
 
-@keyframes rainbow-scroll {
-    0% {
-        background-position: 0% center;
-    }
-    100% {
-        background-position: 200% center;
-    }
+h1:hover {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.788),
+                 0 0 40px rgb(199, 183, 183),
+                 0 0 60px rgb(255, 255, 255);
+    transform: scale(1.05);
+    color: #ffffffb4;
 }
 
 img {

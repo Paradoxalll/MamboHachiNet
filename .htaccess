@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Redirect /index.html to /home
+RewriteCond %{THE_REQUEST} /index\.html [NC]
+RewriteRule ^index\.html$ /home [R=301,L]
+
+# Serve index.html when /home is requested
+RewriteRule ^home$ index.html [L]
+
+# Optionally redirect root to /home
+RewriteRule ^$ /home [R=301,L]
